@@ -58,9 +58,6 @@ export default function PacmanCanvas({ updateScore }: PacmanCanvasProps) {
           contract_type: "proxy | regular"
         })
       });
-    if (!response.ok) {
-      console.log("shit")
-    }
 
     const json = await response.json();
     const topUsers = json.result.output[0].value.map((item: any) => ({

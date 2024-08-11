@@ -1,5 +1,26 @@
 [
     {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_width",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_height",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_maxTopUsers",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -78,53 +99,6 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "enemyId",
-                "type": "uint256"
-            }
-        ],
-        "name": "generateRandomPosition",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "newScore",
-                "type": "uint256"
-            }
-        ],
-        "name": "updateScore",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_width",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_height",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_maxTopUsers",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
             }
@@ -143,6 +117,19 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "enemyId",
+                "type": "uint256"
+            }
+        ],
+        "name": "generateRandomPosition",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -265,6 +252,19 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "newScore",
+                "type": "uint256"
+            }
+        ],
+        "name": "updateScore",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

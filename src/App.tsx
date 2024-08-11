@@ -10,7 +10,7 @@ import { Web3Auth } from "@web3auth/modal";
 import { useEffect, useState } from "react";
 import PacmanCanvas from "./components/PacmanCanvas";
 
-const clientId = "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
+const clientId = "BN3u3FzkI9l5RGOrLrUCC08gegAQaSf819hQYrlkgwsVtv9p9DJhEdckQ6dtqHLHP8AjZk4XJkBgIAX7JcJHMlc"; // get from https://dashboard.web3auth.io
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -31,7 +31,7 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
 
 const web3auth = new Web3Auth({
     clientId,
-    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
     privateKeyProvider,
 });
 
@@ -39,7 +39,7 @@ function App() {
     const [provider, setProvider] = useState<IProvider | null>(null);
     const [loggedIn, setLoggedIn] = useState(false);
     const [gameStarted, setGameStarted] = useState(false);
-    const [userAddress, setUserAddress] = useState(null);
+    const [userAddress, setUserAddress] = useState('');
     useEffect(() => {
         const init = async () => {
             try {
@@ -47,7 +47,13 @@ function App() {
                 setProvider(web3auth.provider);
                 if (web3auth.connected) {
                     setLoggedIn(true);
-                    setUserAddress(await RPC.getAccounts(provider as IProvider))
+                    try {
+                        const userAddress = await RPC.getAccounts(provider as IProvider)
+                        setUserAddress(userAddress)
+                    }
+                    catch (error) {
+                        console.log(error)
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -71,7 +77,9 @@ function App() {
     };
     const createGame = async () => {
         await RPC.createGame(provider as IProvider);
-        setGameStarted(true);
+        if (!gameStarted) {
+            setGameStarted(true);
+        }
     }
     const updateScore = async (score: Number) => {
         await RPC.updateScore(provider as IProvider, score);
@@ -81,9 +89,10 @@ function App() {
         <>
             <div className="flex-container">
                 <div>
+                    <span>User: {userAddress}</span>
+                </div>
+                <div>
 
-                    User:
-                    {gameStarted ? userAddress : null}
                     {
                         gameStarted ? <PacmanCanvas updateScore={updateScore} /> :
                             <button onClick={createGame} className="card">
