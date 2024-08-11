@@ -8,16 +8,14 @@ import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { Web3Auth } from "@web3auth/modal";
 import { useEffect, useState } from "react";
-
-// import RPC from "./viemRPC";
-// import RPC from "./web3RPC";
+import PacmanCanvas from "./components/PacmanCanvas";
 
 const clientId = "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0xaa36a7",
-    rpcTarget: "https://rpc.ankr.com/eth_sepolia",
+    chainId: "0xaa37dc",
+    rpcTarget: "https://optimism-sepolia.blockpi.network/v1/rpc/public",
     // Avoid using public rpcTarget in production.
     // Use services like Infura, Quicknode etc
     displayName: "Ethereum Sepolia Testnet",
@@ -40,14 +38,17 @@ const web3auth = new Web3Auth({
 function App() {
     const [provider, setProvider] = useState<IProvider | null>(null);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [gameStarted, setGameStarted] = useState(false);
+    const [userAddress, setUserAddress] = useState('');
     useEffect(() => {
         const init = async () => {
             try {
                 await web3auth.initModal();
                 setProvider(web3auth.provider);
-
                 if (web3auth.connected) {
                     setLoggedIn(true);
+                    setUserAddress(await RPC.getAccounts(provider as IProvider))
+
                 }
             } catch (error) {
                 console.error(error);
@@ -76,15 +77,30 @@ function App() {
             console.log(...args);
         }
     }
+    const createGame = async () => {
+        let positions = await RPC.createGame(provider as IProvider);
+        setGameStarted(true);
+    }
+    const updateScore = async (score: Number) => {
+        await RPC.updateScore(provider as IProvider, score);
+        setGameStarted(false);
+    }
     const loggedInView = (
         <>
             <div className="flex-container">
                 <div>
+
+                    {
+                        gameStarted ? <PacmanCanvas updateScore={updateScore} /> :
+                            <button onClick={createGame} className="card">
+                                Start Game
+                            </button>
+                    }
+                </div>
+                <div>
                     <button onClick={logout} className="card">
                         Log Out
                     </button>
-                </div>
-                <div>
                 </div>
             </div>
         </>

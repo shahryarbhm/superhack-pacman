@@ -1,6 +1,8 @@
 import type { IProvider } from "@web3auth/base";
 import Web3 from "web3";
+import contractABI from "../abi/pacman.json";
 
+const contractAddress = "0x327a8800ab514cF9Cea1F7aaF03C57b59F74f861"
 
 const getChainId = async (provider: IProvider): Promise<string> => {
     try {
@@ -102,6 +104,33 @@ const sendTransaction = async (provider: IProvider): Promise<any> => {
     }
 }
 
+const createGame = async (provider: IProvider): Promise<any> => {
+    try {
+        const web3 = new Web3(provider as any);
+        const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+        const receipt = await myContract.methods.createGame().send({
+            from: `${(await web3.eth.getAccounts())[0]}`,
+        });
+        return receipt;
+    }
+    catch (error) {
+        return error as string
+    }
+}
 
+const updateScore = async (provider: IProvider, score: Number): Promise<any> => {
+    try {
+        const web3 = new Web3(provider as any);
+        const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+        const receipt = await myContract.methods.updateScore(score).send({
+            from: `${(await web3.eth.getAccounts())[0]}`,
+        });
+        return receipt;
+    }
+    catch (error) {
+        return error as string
+    }
 
-export default { getChainId, getAccounts, getBalance, sendTransaction, signMessage };
+}
+
+export default { getChainId, getAccounts, getBalance, sendTransaction, signMessage, createGame, updateScore };
