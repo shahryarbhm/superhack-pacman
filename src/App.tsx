@@ -14,11 +14,11 @@ const clientId = "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw
 
 const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0xaa37dc",
-    rpcTarget: "https://optimism-sepolia.blockpi.network/v1/rpc/public",
+    chainId: "0x66eee",
+    rpcTarget: "https://arbitrum-sepolia.blockpi.network/v1/rpc/public ",
     // Avoid using public rpcTarget in production.
     // Use services like Infura, Quicknode etc
-    displayName: "Ethereum Sepolia Testnet",
+    displayName: "Arbitrum Sepolia Test",
     blockExplorerUrl: "https://sepolia.etherscan.io",
     ticker: "ETH",
     tickerName: "Ethereum",
@@ -39,7 +39,7 @@ function App() {
     const [provider, setProvider] = useState<IProvider | null>(null);
     const [loggedIn, setLoggedIn] = useState(false);
     const [gameStarted, setGameStarted] = useState(false);
-    const [userAddress, setUserAddress] = useState('');
+    const [userAddress, setUserAddress] = useState(null);
     useEffect(() => {
         const init = async () => {
             try {
@@ -48,7 +48,6 @@ function App() {
                 if (web3auth.connected) {
                     setLoggedIn(true);
                     setUserAddress(await RPC.getAccounts(provider as IProvider))
-
                 }
             } catch (error) {
                 console.error(error);
@@ -70,15 +69,8 @@ function App() {
         setProvider(null);
         setLoggedIn(false);
     };
-    function uiConsole(...args: any[]): void {
-        const el = document.querySelector("#console>p");
-        if (el) {
-            el.innerHTML = JSON.stringify(args || {}, null, 2);
-            console.log(...args);
-        }
-    }
     const createGame = async () => {
-        let positions = await RPC.createGame(provider as IProvider);
+        await RPC.createGame(provider as IProvider);
         setGameStarted(true);
     }
     const updateScore = async (score: Number) => {
@@ -90,6 +82,8 @@ function App() {
             <div className="flex-container">
                 <div>
 
+                    User:
+                    {gameStarted ? userAddress : null}
                     {
                         gameStarted ? <PacmanCanvas updateScore={updateScore} /> :
                             <button onClick={createGame} className="card">
@@ -101,7 +95,9 @@ function App() {
                     <button onClick={logout} className="card">
                         Log Out
                     </button>
+
                 </div>
+
             </div>
         </>
     );

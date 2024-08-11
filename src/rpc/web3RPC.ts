@@ -2,7 +2,7 @@ import type { IProvider } from "@web3auth/base";
 import Web3 from "web3";
 import contractABI from "../abi/pacman.json";
 
-const contractAddress = "0x327a8800ab514cF9Cea1F7aaF03C57b59F74f861"
+const contractAddress = "0x95fd2C7f1cfD23641116C16f08be621EC3dA1a20"
 
 const getChainId = async (provider: IProvider): Promise<string> => {
     try {

@@ -10,6 +10,7 @@ export default function PacmanCanvas({ updateScore }: PacmanCanvasProps) {
   const [score, setScore] = useState(0);
   const [canvasContext, setCanvasContext] =
     useState<CanvasRenderingContext2D | null>(null);
+  const [topUsers, setTopUsers] = useState<{ address: string, score: number, hasActiveGame: boolean }[]>([]);
 
   const game: Game = getGameInstance();
 
@@ -24,14 +25,53 @@ export default function PacmanCanvas({ updateScore }: PacmanCanvasProps) {
       game.setCanvasContext2d(canvasContext);
     }
   }, [canvasContext]);
+
   useEffect(() => {
     setScore(game.getScore());
-  }, [])
+  }, [game.getScore()]);
+
+  useEffect(() => {
+    const interval = setInterval(getApi, 3000); // Run getApi every 10 seconds
+    return () => {
+      clearInterval(interval); // Clean up the interval on component unmount
+    };
+  }, []);
+
   const endGame = () => {
-    game.endGame()
-    updateScore(score)
-    game.reset()
-  }
+    updateScore(game.getScore());
+    game.endGame();
+    game.reset();
+  };
+
+  const getApi = async () => {
+    let endpoint = "https://arbitrum-sepolia.blockscout.com/api/v2/smart-contracts/0x95fd2C7f1cfD23641116C16f08be621EC3dA1a20/query-read-method"
+    let response = await fetch(endpoint,
+      {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          args: [
+          ],
+          method_id: "f39dfb17",
+          contract_type: "proxy | regular"
+        })
+      });
+    if (!response.ok) {
+      console.log("shit")
+    }
+
+    const json = await response.json();
+    const topUsers = json.result.output[0].value.map((item: any) => ({
+      address: item[0],
+      score: item[1],
+      hasActiveGame: item[2]
+    }));
+
+    topUsers.sort((a: any, b: any) => b.score - a.score);
+    setTopUsers(topUsers)
+  };
 
 
   return (
@@ -40,12 +80,7 @@ export default function PacmanCanvas({ updateScore }: PacmanCanvasProps) {
         <section>
           {/* Game controls */}
           <button onClick={() => game.pauseResume()}>Pause / Resume</button>
-          <button
-            onClick={() => game.newGame()}
-          // disabled={!gameStateSnapshotEvent?.payload.started}
-          >
-            Restart Game
-          </button>
+          <button onClick={() => game.newGame()}>Restart Game</button>
           <button onClick={endGame}>End Game</button>
         </section>
         <section>
@@ -68,6 +103,15 @@ export default function PacmanCanvas({ updateScore }: PacmanCanvasProps) {
             >
               <p>Canvas not supported</p>
             </canvas>
+          </div>
+
+          <div>
+            <span>Game Top Scorse</span>
+            <ul>
+              {topUsers.map((item, index) => ( // Changed from history to topUsers
+                <li key={index}>{item.address} : {item.score}</li>
+              ))}
+            </ul>
           </div>
         </section>
       </div>
