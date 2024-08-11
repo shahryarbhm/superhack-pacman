@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 
 interface PacmanCanvasProps {
   updateScore: (score: Number) => {};
+  userAddress: any;
 }
-export default function PacmanCanvas({ updateScore }: PacmanCanvasProps) {
+export default function PacmanCanvas({ updateScore, userAddress }: PacmanCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
   const [canvasContext, setCanvasContext] =
@@ -82,6 +83,10 @@ export default function PacmanCanvas({ updateScore }: PacmanCanvasProps) {
         </section>
         <section>
           <span>Score: {score}</span>
+          <br />
+          <span>
+            Address: {userAddress !== '' ? String(userAddress) : 'No Address'}
+          </span>
         </section>
 
         <section>

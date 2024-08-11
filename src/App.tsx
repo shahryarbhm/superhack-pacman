@@ -49,6 +49,7 @@ function App() {
                     setLoggedIn(true);
                     try {
                         const userAddress = await RPC.getAccounts(provider as IProvider)
+                        console.log(userAddress)
                         setUserAddress(userAddress)
                     }
                     catch (error) {
@@ -89,12 +90,8 @@ function App() {
         <>
             <div className="flex-container">
                 <div>
-                    <span>User: {userAddress}</span>
-                </div>
-                <div>
-
                     {
-                        gameStarted ? <PacmanCanvas updateScore={updateScore} /> :
+                        gameStarted ? <PacmanCanvas updateScore={updateScore} userAddress={userAddress} /> :
                             <button onClick={createGame} className="card">
                                 Start Game
                             </button>
@@ -104,9 +101,7 @@ function App() {
                     <button onClick={logout} className="card">
                         Log Out
                     </button>
-
                 </div>
-
             </div>
         </>
     );
